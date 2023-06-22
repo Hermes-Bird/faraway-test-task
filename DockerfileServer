@@ -1,0 +1,9 @@
+FROM golang:1.20 as build
+WORKDIR ../app
+COPY . .
+RUN make build-server
+
+FROM alpine:latest as production
+COPY --from=build /app/app /
+RUN apk add libc6-compat
+ENTRYPOINT ["./app"]
